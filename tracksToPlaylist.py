@@ -38,6 +38,7 @@ playlists = spotifyObject.current_user_playlists(limit=10)['items']
 for item in playlists:
 	if item['name'] == playlist_name:
 		playlist_id = item['id']
+		break
 
 #if the playlist can not be found 
 if playlist_id == None:
