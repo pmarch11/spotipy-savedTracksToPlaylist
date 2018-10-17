@@ -27,10 +27,23 @@ displayName = user['display_name']
 
 startingOffset = 0
 
-playlist_name = input("What would you like the playlist to be called? ")
+print("0 - Create a new playlist")
+print("1 - Modify an existing one")
+decide = input("Choose 0 or 1: ")
 
-#create a playlist for the user
-spotifyObject.user_playlist_create(username, playlist_name, public=True)
+
+while True:
+	if decide == "0":
+		playlist_name = input("What would you like the playlist to be called? ")
+
+		spotifyObject.user_playlist_create(username, playlist_name, public=True)
+		break
+
+	elif decide == "1":
+		playlist_name = input("What is the playlists name? ")
+		break
+	else:
+		print("invalid input")
 
 #get the id of the playlist
 playlist_id = None
@@ -43,6 +56,8 @@ for item in playlists:
 #if the playlist can not be found 
 if playlist_id == None:
 	raise Exception('Error: playlist can not be found!')
+
+counter = 0
 
 
 
@@ -57,6 +72,13 @@ while True:
 		track = item['track']
 		tracks.append("spotify:track:" + track['id'])
 	startingOffset+=50
-	spotifyObject.user_playlist_add_tracks(username, playlist_id, tracks)
+	if counter == 0 and decide == "1":
+		spotifyObject.user_playlist_replace_tracks(username, playlist_id, tracks)
+		counter = 1
+	else:
+		spotifyObject.user_playlist_add_tracks(username, playlist_id, tracks)
 
-print("created playlist "+playlist_name+" and added tracks successfully!")
+if decide == "0":
+	print("created playlist "+playlist_name+" and added tracks successfully!")
+elif decide == "1":
+	print("modified playlist "+playlist_name+" and added tracks successfully!")
